@@ -1,59 +1,100 @@
 import { useState } from "react";
 import { login } from "../services/api";
+import { useNavigate, Link } from "react-router-dom";
+import "./loginPage.css";
 
-function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const data = await login({
-      email,
-      password,
-    });
+    try {
+      const data = await login({
+        email,
+        password,
+      });
 
-    console.log(data);
+      console.log(
+        "Login Response:",
+        data
+      );
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "token",
+        data.token
+      );
+
       alert("Login Success");
-    } else {
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
       alert("Login Failed");
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="login-page">
+      <div className="login-card">
+        <h1 className="logo">
+          SmartTodo
+        </h1>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-        />
+        <p className="subtitle">
+          Welcome Back
+        </p>
 
-        <br /><br />
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
+            required
+          />
 
-        <br /><br />
+          <button type="submit">
+            Sign In
+          </button>
+        </form>
 
-        <button type="submit">
-          Login
-        </button>
-      </form>
+        <div className="signup-text">
+          <span>
+            Don't have an account?
+          </span>
+
+          <br />
+
+          <Link to="/signup">
+            Create Account
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
 
-export default LoginPage;
+export default Login;

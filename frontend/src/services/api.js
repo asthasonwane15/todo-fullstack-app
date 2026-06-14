@@ -2,92 +2,170 @@ const BASE_URL = "http://localhost:5000/api";
 
 export const signup = async (userData) => {
   try {
-    const response = await fetch(`${BASE_URL}/auth/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
+    const response = await fetch(
+      `${BASE_URL}/auth/signup`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify(userData),
+      }
+    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Signup Failed");
-    }
-
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Signup Error:", error);
+    console.log(error);
     throw error;
   }
 };
 
 export const login = async (userData) => {
   try {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(userData),
-    });
+    const response = await fetch(
+      `${BASE_URL}/auth/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify(userData),
+      }
+    );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Login Failed");
-    }
-
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Login Error:", error);
+    console.log(error);
     throw error;
   }
 };
 
-export const getTodos = async (token) => {
+export const getTodos = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/todos`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const token =
+      localStorage.getItem("token");
 
-    const data = await response.json();
+    const response = await fetch(
+      `${BASE_URL}/todos`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to Fetch Todos");
-    }
-
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Get Todos Error:", error);
+    console.log(error);
     throw error;
   }
 };
 
-export const createTodo = async (title, token) => {
+export const createTodo = async (
+  title
+) => {
   try {
-    const response = await fetch(`${BASE_URL}/todos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ title }),
-    });
+    const token =
+      localStorage.getItem("token");
 
-    const data = await response.json();
+    const response = await fetch(
+      `${BASE_URL}/todos`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+          Authorization:
+            `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title,
+        }),
+      }
+    );
 
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to Create Todo");
-    }
-
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Create Todo Error:", error);
+    console.log(error);
     throw error;
   }
+};
+
+export const deleteTodo = async (
+  id
+) => {
+  try {
+    const token =
+      localStorage.getItem("token");
+
+    const response = await fetch(
+      `${BASE_URL}/todos/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const updateTodo = async (id, title) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      `${BASE_URL}/todos/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title,
+        }),
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+
+export const toggleTodo = async (
+  id,
+  completed
+) => {
+  const token =
+    localStorage.getItem("token");
+
+  const response = await fetch(
+    `${BASE_URL}/todos/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type":
+          "application/json",
+        Authorization:
+          `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        completed,
+      }),
+    }
+  );
+
+  return response.json();
 };
